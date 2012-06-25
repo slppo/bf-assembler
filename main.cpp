@@ -2,6 +2,7 @@
 #include <string>
 #include <stack>
 #include <memory>
+#include <iostream>
 
 const std::string STD_LIB = 
 #ifndef NDEBUG
@@ -27,10 +28,12 @@ std::string BrainfuckIgnore(const std::string &code);
 
 int main()
 {    
-  BrainFucktor func = Compile(">++++++++++>>+<+[[+++++[>++++++++<-]>.<++++++[>--------<-]+<<]>.>[->["
-"<++>-[<++>-[<++>-[<++>-[<-------->>[-]++<-[<++>-]]]]]]<[>+<-]+>>]<<]");
-  func();    
-  return 0;
+  BrainFucktor func = Compile("++[>++[>++[>++[>++<-] <-] <-] <-]  >>>><+++++++++++[>+++++<-] >. <++[>++++++++<-] >+. <+++[>--<-] >-. <+++[>++++++<-] >+."
+    "<+++++++++++[>-------<-] >. <+++++++++++++++++++[>++++<-] >. <+++++++++++++++++++++++++++++++++++++++++[>--<-] >-. <+++++++++++++++++[>+++++<-] >."
+    "<++[>--<-] >-. <+++++[>----------------<-] >. <+++++++++++++++++++[>++<-] >. <+++++[>++<-] >. <++[>--------<-] >-. ");
+  func();  
+  std::cin.get();
+  return 0;  
 }
 
 BrainFucktor Compile(const std::string &code)
@@ -42,7 +45,7 @@ BrainFucktor Compile(const std::string &code)
   FARPROC memsetProc = GetProcAddress(GetModuleHandle(STD_LIB.c_str()), "memset");
   UINT_PTR memsetIlt = reinterpret_cast<UINT_PTR>(memsetProc);
   FARPROC putcharProc = GetProcAddress(GetModuleHandle(STD_LIB.c_str()), "putchar");
-  UINT_PTR putcharIlt = reinterpret_cast<UINT_PTR>(putcharProc);
+  UINT_PTR putcharIlt = reinterpret_cast<UINT_PTR>(putcharProc); 
   FARPROC getcharProc = GetProcAddress(GetModuleHandle(STD_LIB.c_str()), "getchar");
   UINT_PTR getcharIlt = reinterpret_cast<UINT_PTR>(getcharProc);
 
