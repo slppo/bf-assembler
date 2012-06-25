@@ -1,6 +1,7 @@
 #include <Windows.h>
 #include <string>
 #include <stack>
+#include <memory>
 
 const std::string STD_LIB = 
 #ifndef NDEBUG
@@ -11,19 +12,28 @@ const std::string STD_LIB =
 
 typedef void (*bf_fn)();
 
-bf_fn Compile(const std::string &code);
+class BrainFucktor
+{
+public:
+  BrainFucktor(bf_fn func) : _func(func) { }
+  ~BrainFucktor() { delete reinterpret_cast<void*>(_func); _func = 0; }
+  void operator()() { _func(); }
+private:
+  bf_fn _func;
+};
+
+BrainFucktor Compile(const std::string &code);
 std::string BrainfuckIgnore(const std::string &code);
 
 int main()
 {    
-  bf_fn func = Compile(">++++++++++>>+<+[[+++++[>++++++++<-]>.<++++++[>--------<-]+<<]>.>[->["
+  BrainFucktor func = Compile(">++++++++++>>+<+[[+++++[>++++++++<-]>.<++++++[>--------<-]+<<]>.>[->["
 "<++>-[<++>-[<++>-[<++>-[<-------->>[-]++<-[<++>-]]]]]]<[>+<-]+>>]<<]");
-  func();  
-  delete reinterpret_cast<void*>(func);  
+  func();    
   return 0;
 }
 
-bf_fn Compile(const std::string &code)
+BrainFucktor Compile(const std::string &code)
 {
   static const std::size_t BUFFER_SIZE = 16384;
 
