@@ -12,6 +12,7 @@ const std::string STD_LIB =
 typedef void (*bf_fn)();
 
 bf_fn Compile(const std::string &code);
+std::string BrainfuckIgnore(const std::string &code);
 
 int main()
 {    
@@ -23,7 +24,9 @@ int main()
 
 bf_fn Compile(const std::string &code)
 {
-  static const std::size_t BUFFER_SIZE = 2048;  
+  static const std::size_t BUFFER_SIZE = 2048;
+
+  std::string cleanedCode = BrainfuckIgnore(code);
 
   FARPROC memsetProc = GetProcAddress(GetModuleHandle(STD_LIB.c_str()), "memset");
   UINT_PTR memsetIlt = reinterpret_cast<UINT_PTR>(memsetProc);
@@ -60,8 +63,8 @@ bf_fn Compile(const std::string &code)
 
   std::stack<std::pair<unsigned int*, std::size_t>> loops;
 
-  std::string::const_iterator end = code.end();
-  for(std::string::const_iterator it = code.begin(); it != end; ++it)
+  std::string::const_iterator end = cleanedCode.end();
+  for(std::string::const_iterator it = cleanedCode.begin(); it != end; ++it)
   {
     switch(*it)
     {
@@ -152,4 +155,16 @@ bf_fn Compile(const std::string &code)
   DWORD old;
   VirtualProtect(buffer, BUFFER_SIZE, PAGE_EXECUTE_READWRITE, &old);
   return reinterpret_cast<bf_fn>(buffer);
+}
+
+std::string BrainfuckIgnore(const std::string &code)
+{
+  std::string result;
+  std::string::const_iterator end = code.end();
+  for(std::string::const_iterator it = code.begin(); it != end; ++it)
+  {
+    if(*it == '+' || *it == '-' || *it == '>' || *it == '<' || *it == '[' || *it == ']' || *it == ',' || *it == '.')
+      result += *it;
+  }
+  return result;
 }
