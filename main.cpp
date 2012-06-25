@@ -16,7 +16,8 @@ std::string BrainfuckIgnore(const std::string &code);
 
 int main()
 {    
-  bf_fn func = Compile("++++++++++[>+++++++>++++++++++>+++>+<<<<-]>++.>+.+++++++..+++.>++.<<+++++++++++++++.>.+++.------.--------.>+.>.,");
+  bf_fn func = Compile(">++++++++++>>+<+[[+++++[>++++++++<-]>.<++++++[>--------<-]+<<]>.>[->["
+"<++>-[<++>-[<++>-[<++>-[<-------->>[-]++<-[<++>-]]]]]]<[>+<-]+>>]<<]");
   func();  
   delete reinterpret_cast<void*>(func);  
   return 0;
@@ -24,7 +25,7 @@ int main()
 
 bf_fn Compile(const std::string &code)
 {
-  static const std::size_t BUFFER_SIZE = 2048;
+  static const std::size_t BUFFER_SIZE = 16384;
 
   std::string cleanedCode = BrainfuckIgnore(code);
 
@@ -105,6 +106,8 @@ bf_fn Compile(const std::string &code)
       add_opcode(LOBYTE(HIWORD(putcharLoc))); add_opcode(HIBYTE(HIWORD(putcharLoc))); // call putchar
 
       add_opcode(0x83); add_opcode(0xc4); add_opcode(0x04); // add esp, 4
+
+      add_opcode(0x8B); add_opcode(0x85); add_opcode(0x34); add_opcode(0xF4); add_opcode(0xFF); add_opcode(0xFF); // mov eax, dword ptr [ebp-0xbcc]
       }
       break;
     case ',':
@@ -116,6 +119,7 @@ bf_fn Compile(const std::string &code)
       add_opcode(LOBYTE(HIWORD(getcharLoc))); add_opcode(HIBYTE(HIWORD(getcharLoc))); // call getchar
       add_opcode(0x8B); add_opcode(0x8d); add_opcode(0x34); add_opcode(0xf4); add_opcode(0xff); add_opcode(0xff); // mov ecx, dword ptr [ebp-0xbcc]
       add_opcode(0x88); add_opcode(0x01); // mov byte ptr [ecx], al
+      add_opcode(0x8B); add_opcode(0x85); add_opcode(0x34); add_opcode(0xF4); add_opcode(0xFF); add_opcode(0xFF); // mov eax, dword ptr [ebp-0xbcc]
       }
       break;
     case '[':            
