@@ -2,6 +2,13 @@
 #include <string>
 #include <stack>
 
+const std::string STD_LIB = 
+#ifndef NDEBUG
+  "msvcr100d.dll";
+#else
+  "msvcr100.dll";
+#endif
+
 typedef void (*bf_fn)();
 
 bf_fn Compile(const std::string &code);
@@ -18,11 +25,11 @@ bf_fn Compile(const std::string &code)
 {
   static const std::size_t BUFFER_SIZE = 2048;  
 
-  FARPROC memsetProc = GetProcAddress(GetModuleHandle("msvcr100d.dll"), "memset");
+  FARPROC memsetProc = GetProcAddress(GetModuleHandle(STD_LIB.c_str()), "memset");
   UINT_PTR memsetIlt = reinterpret_cast<UINT_PTR>(memsetProc);
-  FARPROC putcharProc = GetProcAddress(GetModuleHandle("msvcr100d.dll"), "putchar");
+  FARPROC putcharProc = GetProcAddress(GetModuleHandle(STD_LIB.c_str()), "putchar");
   UINT_PTR putcharIlt = reinterpret_cast<UINT_PTR>(putcharProc);
-  FARPROC getcharProc = GetProcAddress(GetModuleHandle("msvcr100d.dll"), "getchar");
+  FARPROC getcharProc = GetProcAddress(GetModuleHandle(STD_LIB.c_str()), "getchar");
   UINT_PTR getcharIlt = reinterpret_cast<UINT_PTR>(getcharProc);
 
   void *buffer = operator new(BUFFER_SIZE);
