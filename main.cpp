@@ -164,7 +164,7 @@ BrainFucktor Compile(const std::string &code)
       break;
     case '[':            
       {
-      unsigned int *endLoop = 0;
+      unsigned int *endLoop = nullptr;
       std::pair<unsigned int*, std::size_t> pair(endLoop, idx);
       OP(0x8B); OP(0x8d); OP(0x34); OP(0xf4); OP(0xff); OP(0xff); // mov ecx, dword ptr [ebp-0xbcc]
       OP(0x0f); OP(0xbe); OP(0x08); // movsx ecx, byte ptr [eax]      
