@@ -1,0 +1,1 @@
+Assembles brainfuck at runtime into a function. Tested on VC2010 and VC2012
